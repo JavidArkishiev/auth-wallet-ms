@@ -1,0 +1,77 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: Arkishiev
+      preConditions:
+        - onFail: HALT
+          not:
+            tableExists:
+              tableName: users
+      changes:
+        - createTable:
+            tableName: users
+
+            columns:
+              - column:
+                  name: user_id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: first_name
+                  type: varchar(15)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: last_name
+                  type: varchar(25)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: email
+                  type: varchar
+                  constraints:
+                    unique: true
+                    nullable: false
+              - column:
+                  name: phone_number
+                  type: varchar(20)
+                  constraints:
+                    unique: true
+                    nullable: false
+              - column:
+                  name: password
+                  type: varchar
+                  constraints:
+                    unique: false
+                    nullable: false
+              - column:
+                  name: create_at
+                  type: timestamp
+                  constraints:
+                    nullable: false
+              - column:
+                  name: update_at
+                  type: timestamp
+                  constraints:
+                    nullable: true
+              - column:
+                  name: otp
+                  type: varchar(8)
+                  constraints:
+                    unique: true
+                    nullable: true
+              - column:
+                  name: otp_create_time
+                  type: timestamp
+                  constraints:
+                    nullable: true
+              - column:
+                  name: enable
+                  type: boolean
+                  defaultValue: false
+                  constraints:
+                    nullable: false
+
+
