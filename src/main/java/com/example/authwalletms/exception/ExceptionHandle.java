@@ -44,10 +44,10 @@ public class ExceptionHandle {
 //        return BaseResponse.failure(e.getMessage());
 //    }
 
-//    @ExceptionHandler(Exception.class)
-//    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-//    public BaseResponse<String> handleException(Exception e) {
-//        return BaseResponse.failure("Server error : " + e.getMessage());
-//    }
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public BaseResponse<String> handleException(Exception e) {
+        return BaseResponse.failure("Server error : " + e.getMessage());
+    }
 
 }
