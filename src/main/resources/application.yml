@@ -4,16 +4,29 @@ spring:
 
   kafka:
     producer:
-      bootstrap-servers: localhost:9092
+      bootstrap-servers: kafka+ssl://ec2-34-225-249-6.compute-1.amazonaws.com:9096,kafka+ssl://ec2-35-171-249-113.compute-1.amazonaws.com:9096,kafka+ssl://ec2-52-72-57-180.compute-1.amazonaws.com:9096,kafka+ssl://ec2-35-173-141-235.compute-1.amazonaws.com:9096,kafka+ssl://ec2-52-207-67-154.compute-1.amazonaws.com:9096,kafka+ssl://ec2-52-22-141-43.compute-1.amazonaws.com:9096,kafka+ssl://ec2-35-153-237-2.compute-1.amazonaws.com:9096,kafka+ssl://ec2-35-170-235-71.compute-1.amazonaws.com:9096
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      properties:
+        security.protocol: SASL_SSL
+        sasl.mechanism: PLAIN
+#        sasl.jaas.config: org.apache.kafka.common.security.plain.PlainLoginModule required \
+#          username="${KAFKA_USERNAME}" \
+#          password="${KAFKA_PASSWORD}";
 
     consumer:
-      bootstrap-servers: localhost:9092
+      bootstrap-servers: kafka+ssl://ec2-34-225-249-6.compute-1.amazonaws.com:9096,kafka+ssl://ec2-35-171-249-113.compute-1.amazonaws.com:9096,kafka+ssl://ec2-52-72-57-180.compute-1.amazonaws.com:9096,kafka+ssl://ec2-35-173-141-235.compute-1.amazonaws.com:9096,kafka+ssl://ec2-52-207-67-154.compute-1.amazonaws.com:9096,kafka+ssl://ec2-52-22-141-43.compute-1.amazonaws.com:9096,kafka+ssl://ec2-35-153-237-2.compute-1.amazonaws.com:9096,kafka+ssl://ec2-35-170-235-71.compute-1.amazonaws.com:9096
       group-id: myGroup
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       auto-offset-reset: earliest
+      properties:
+        security.protocol: SASL_SSL
+        sasl.mechanism: PLAIN
+#        sasl.jaas.config: org.apache.kafka.common.security.plain.PlainLoginModule required \
+#          username="${KAFKA_USERNAME}" \
+#          password="${KAFKA_PASSWORD}";
+
 
   docker:
     compose:
