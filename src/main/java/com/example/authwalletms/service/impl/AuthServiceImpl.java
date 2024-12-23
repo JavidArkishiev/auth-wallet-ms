@@ -15,6 +15,7 @@ import com.example.authwalletms.service.EmailService;
 import com.example.authwalletms.service.JwtService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -33,6 +34,7 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final EmailService emailService;
+    private final KafkaTemplate<String, String> kafkaTemplate;
 
     @Override
     @Transactional
@@ -52,7 +54,7 @@ public class AuthServiceImpl implements AuthService {
         User user = userMapper.mapToEntity(signUpRequest);
         user.setCreateAt(LocalDateTime.now());
         user.setOtpCreateTime(LocalDateTime.now());
-        emailService.sendOTPEmail(user.getEmail(), user.getOtp());
+        kafkaTemplate.send("user-register", user.getEmail() + ":" + user.getOtp());
         userRepository.save(user);
 
     }
@@ -84,6 +86,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    @Transactional
     public void verifyAccount(OtpRequest request) {
         var user = userRepository.findByOtp(request.otp())
                 .orElseThrow(() -> new ResourceFoundException("otp can not found or incorrect"));
@@ -100,6 +103,7 @@ public class AuthServiceImpl implements AuthService {
         user.setOtpCreateTime(null);
         user.setUpdateAt(LocalDateTime.now());
         userRepository.save(user);
+        kafkaTemplate.send("verify-user", user.getPhoneNumber());
     }
 
     @Override
