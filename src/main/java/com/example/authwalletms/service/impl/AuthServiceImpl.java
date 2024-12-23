@@ -103,7 +103,7 @@ public class AuthServiceImpl implements AuthService {
         user.setOtpCreateTime(null);
         user.setUpdateAt(LocalDateTime.now());
         userRepository.save(user);
-        kafkaTemplate.send("verify-user", user.getPhoneNumber());
+        kafkaTemplate.send("verified-user", user.getPhoneNumber());
     }
 
     @Override
