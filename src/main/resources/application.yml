@@ -10,9 +10,10 @@ spring:
       properties:
         security.protocol: SASL_SSL
         sasl.mechanism: PLAIN
-#        sasl.jaas.config: org.apache.kafka.common.security.plain.PlainLoginModule required \
-#          username="${KAFKA_USERNAME}" \
-#          password="${KAFKA_PASSWORD}";
+        sasl.jaas.config: >
+          org.apache.kafka.common.security.plain.PlainLoginModule required
+          username="your_username"
+          password="your_password";
 
     consumer:
       bootstrap-servers: kafka+ssl://ec2-34-225-249-6.compute-1.amazonaws.com:9096,kafka+ssl://ec2-35-171-249-113.compute-1.amazonaws.com:9096,kafka+ssl://ec2-52-72-57-180.compute-1.amazonaws.com:9096,kafka+ssl://ec2-35-173-141-235.compute-1.amazonaws.com:9096,kafka+ssl://ec2-52-207-67-154.compute-1.amazonaws.com:9096,kafka+ssl://ec2-52-22-141-43.compute-1.amazonaws.com:9096,kafka+ssl://ec2-35-153-237-2.compute-1.amazonaws.com:9096,kafka+ssl://ec2-35-170-235-71.compute-1.amazonaws.com:9096
@@ -23,12 +24,13 @@ spring:
       properties:
         security.protocol: SASL_SSL
         sasl.mechanism: PLAIN
-#        sasl.jaas.config: org.apache.kafka.common.security.plain.PlainLoginModule required \
-#          username="${KAFKA_USERNAME}" \
-#          password="${KAFKA_PASSWORD}";
+        sasl.jaas.config: >
+          org.apache.kafka.common.security.plain.PlainLoginModule required
+          username="your_username"
+          password="your_password";
+    
 
-
-  docker:
+    docker:
     compose:
       enabled: false
 
