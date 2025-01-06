@@ -1,9 +1,6 @@
 package com.example.authwalletms.service.impl;
 
-import com.example.authwalletms.dto.request.AuthTokenRequest;
-import com.example.authwalletms.dto.request.LoginRequest;
-import com.example.authwalletms.dto.request.OtpRequest;
-import com.example.authwalletms.dto.request.SignUpRequest;
+import com.example.authwalletms.dto.request.*;
 import com.example.authwalletms.dto.response.AuthResponse;
 import com.example.authwalletms.exception.ResourceExistException;
 import com.example.authwalletms.exception.ResourceFoundException;
@@ -16,9 +13,11 @@ import com.example.authwalletms.service.JwtService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.KafkaHeaders;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -34,7 +33,7 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final EmailService emailService;
-    private final KafkaTemplate<String, String> kafkaTemplate;
+    private final KafkaTemplate<String, Object> kafkaTemplate;
 
     @Override
     @Transactional
@@ -54,8 +53,18 @@ public class AuthServiceImpl implements AuthService {
         User user = userMapper.mapToEntity(signUpRequest);
         user.setCreateAt(LocalDateTime.now());
         user.setOtpCreateTime(LocalDateTime.now());
-        kafkaTemplate.send("user-register", user.getEmail() + ":" + user.getOtp());
+
         userRepository.save(user);
+
+        UserDto userDto = new UserDto(user.getEmail(),
+                user.getPhoneNumber(),
+                user.getOtp()
+        );
+        Message<UserDto> message = MessageBuilder
+                .withPayload(userDto)
+                .setHeader(KafkaHeaders.TOPIC, "user-register")
+                .build();
+        kafkaTemplate.send(message);
 
     }
 
@@ -103,7 +112,16 @@ public class AuthServiceImpl implements AuthService {
         user.setOtpCreateTime(null);
         user.setUpdateAt(LocalDateTime.now());
         userRepository.save(user);
-        kafkaTemplate.send("verified-user", user.getPhoneNumber());
+        UserDto userDto = new UserDto(user.getEmail(),
+                user.getPhoneNumber(),
+                user.getOtp()
+        );
+        Message<UserDto> message = MessageBuilder
+                .withPayload(userDto)
+                .setHeader(KafkaHeaders.TOPIC, "verified-user")
+                .build();
+        System.out.println(message);
+        kafkaTemplate.send(message);
     }
 
     @Override

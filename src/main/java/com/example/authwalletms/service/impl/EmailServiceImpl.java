@@ -1,5 +1,6 @@
 package com.example.authwalletms.service.impl;
 
+import com.example.authwalletms.dto.request.UserDto;
 import com.example.authwalletms.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -26,11 +27,8 @@ public class EmailServiceImpl implements EmailService {
 
     @KafkaListener(topics = "user-register", groupId = "myGroup")
     @Async
-    public void consumeUserRegistration(String message) {
-        String[] parts = message.split(":");
-        String email = parts[0];
-        String otp = parts[1];
-        sendOTPEmail(email, otp);
+    public void consumeUserRegistration(UserDto user) {
+        sendOTPEmail(user.email(), user.otp());
     }
 
 }
